@@ -13,3 +13,7 @@ This can be expanded to include database management using technologies like Mong
 As an added restriction to help me learn validation, I have added a validator that checks if all the input i.e. list of candidates, start time and end time to be required
 and the list of candidates to be atleast of 2 length when submitting it to the server.
 A checker has been added so that a candidate does not have an interview re-alloted to him/her.
+
+
+## Usability
+Run the index.js and open the port number (default 3000).
