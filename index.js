@@ -1,28 +1,18 @@
+const mongoose = require('mongoose');
 const express = require('express');
-const joi = require('joi');
 const app = express();
 app.use(express.json());
-app.use(express.urlencoded({extended: false}));
-const schema = joi.object({id:joi.string().required(), st:joi.number().required(), ed:joi.number().required()});
-var data = [
-    {id:1, st:-1, ed:-1},
-    {id:2, st:-1, ed:-1},
-    {id:3, st:-1, ed:-1},
-    {id:4, st:-1, ed:-1},
-    {id:5, st:-1, ed:-1},
-    {id:6, st:-1, ed:-1},
-    {id:7, st:-1, ed:-1},
-    {id:8, st:-1, ed:-1},
-    {id:9, st:-1, ed:-1},
-    {id:10, st:-1, ed:-1},
-    {id:11, st:-1, ed:-1},
-    {id:12, st:-1, ed:-1},
-    {id:13, st:-1, ed:-1},
-    {id:14, st:-1, ed:-1},
-    {id:15, st:-1, ed:-1},
-];
+app.use(express.urlencoded({extended: true}));
+mongoose.connect("<Your URI here>", { useNewUrlParser: true, useUnifiedTopology: true });
+const Schema = mongoose.Schema;
+const sch_data = new Schema({
+    name: String,
+    st: Number,
+    ed: Number
+});
+const md_data = mongoose.model('interview_model', sch_data);
 
-function check(interviews){
+function check(interviews, data){
     var f = 0;
     f |= (interviews.id.length<2);
     for(let i = 0; i < interviews.id.length; i++)f |= isNaN(+interviews.id[i]);
@@ -31,26 +21,36 @@ function check(interviews){
     return f;
 }
 
-app.get('/', function(req, res){res.status(200).sendFile(__dirname + '/index.html')});
+app.get('/', function (req, res) {res.status(200).sendFile(__dirname + '/index.html');})
 
-app.get('/list', function(req, res){res.status(200).send(data);});
+app.get('/new', function (req, res) {res.status(200).sendFile(__dirname + '/form.html');})
 
-app.get('/new', function(req, res){res.status(200).sendFile(__dirname + '/form.html');});
+app.get('/list', function (req, res) {
+    const val = md_data.find({}, function (err, data) {
+        if(err) throw err;
+        res.status(200).send(data);
+        return data;
+    });
+})
 
-app.post('/new/add', function(req, res){
+app.post('/new/add', function (req, res) {
     var interviews = req.body;
-    var result = schema.validate(interviews);
-    if(result.error)res.status(404).send('Invalid input.');
-    else{
+    md_data.find({}, function (err, data) {
+        if(err) throw err;
         interviews.id = interviews.id.split(',');
-        console.log(interviews);
-        if(check(interviews))res.status(404).send('Invalid input.');
+        if(check(interviews, data))res.status(404).send('Invalid input.');
         else{
-            for(let i = 0; i < interviews.id.length; i++)data[interviews.id[i]-1].st = interviews.st, data[interviews.id[i]-1].ed = interviews.ed;
-            res.status(200).send('right');
+            for(let i = 0; i < interviews.id.length; i++){
+                md_data.findOneAndUpdate({name: interviews.id[i]}, {st: interviews.st, ed: interviews.ed}, function(err, data){
+                    if(err) throw err;
+                    return data;
+                })
+            }
+            res.redirect('/');
         }
-    }
-});
+        return data;
+    });
+})
 
-const port = 3000 || process.env.PORT;
-app.listen(port, function(){console.log(`Listening to ${port}`);});
+const port = process.env.POR || 3000;
+app.listen(port);
