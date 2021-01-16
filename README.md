@@ -14,9 +14,9 @@ As an added restriction to help me learn validation, I have added a validator th
 A checker has been added so that a candidate does not have an interview re-alloted to him/her.
 
 ## Usability
-Add URI to your deployment of choice and populate the chosen database with some objects according to the sample given in the notes section.
+Add URI to your deployment of choice and populate the chosen database with some objects according to the sample given in the notes section.\
 Run the index.js and open the port number (default 3000).
 
 ## Notes
-A document with the following object-data would be considered valid - {name: 1, st: -1, ed: -1}
+A document with the following object-data would be considered valid - {name: 1, st: -1, ed: -1}\
 A document with the following object-data would be considered invalid - {name: qwerty, st: 2, ed: 4}
