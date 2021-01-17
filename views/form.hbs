@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form</title>
+</head>
+<body>
+    <h1>Form to fill new interviews</h1><br>
+    <form action="new/add" method="POST" id="form1">
+        <label for="name">Check Candidates (atleast 2):</label><br>
+        {{#each names}}
+            <input type="checkbox" name="id" value="{{this._id}}"><label>{{this.name}}</label><br>
+        {{/each}}
+        <label for="st">Give starting time: </label><input type="number" name="st" required><br>
+        <label for="st">Give ending time: </label><input type="number" name="ed" required><br>
+        <button type="submit" form="form1" value="Submit">Submit</button> 
+    </form>
+</body>
+</html>
